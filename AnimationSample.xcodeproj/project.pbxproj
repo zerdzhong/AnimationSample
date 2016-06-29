@@ -12,6 +12,7 @@
 		474EF3921D23994E001DC443 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 474EF3901D23994E001DC443 /* Main.storyboard */; };
 		474EF3941D23994E001DC443 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 474EF3931D23994E001DC443 /* Assets.xcassets */; };
 		474EF3971D23994E001DC443 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 474EF3951D23994E001DC443 /* LaunchScreen.storyboard */; };
+		474EF39F1D239CF5001DC443 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474EF39E1D239CF5001DC443 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		474EF3931D23994E001DC443 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		474EF3961D23994E001DC443 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		474EF3981D23994E001DC443 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		474EF39E1D239CF5001DC443 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				474EF38C1D23994D001DC443 /* AppDelegate.swift */,
 				474EF38E1D23994D001DC443 /* ViewController.swift */,
+				474EF39E1D239CF5001DC443 /* DetailViewController.swift */,
 				474EF3901D23994E001DC443 /* Main.storyboard */,
 				474EF3931D23994E001DC443 /* Assets.xcassets */,
 				474EF3951D23994E001DC443 /* LaunchScreen.storyboard */,
@@ -138,6 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				474EF39F1D239CF5001DC443 /* DetailViewController.swift in Sources */,
 				474EF38F1D23994D001DC443 /* ViewController.swift in Sources */,
 				474EF38D1D23994D001DC443 /* AppDelegate.swift in Sources */,
 			);
@@ -263,6 +267,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zerdzhong.AnimationSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -275,6 +280,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zerdzhong.AnimationSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
