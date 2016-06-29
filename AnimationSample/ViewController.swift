@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UITableViewController {
     
-    var animationList = ["扇形动画":AnimationSampleType.sector]
+    var animationList = ["Sector progress Animation":AnimationSampleType.sector]
 
     override func viewDidLoad() {
         super.viewDidLoad()
