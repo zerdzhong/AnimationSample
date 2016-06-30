@@ -47,6 +47,9 @@ class DetailViewController: UIViewController {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let sectorView = containerView as? SectorAnimationView {
             sectorView.progress += 0.1
+            if sectorView.progress > 1 {
+                sectorView.progress = 0
+            }
         }
     }
 }
