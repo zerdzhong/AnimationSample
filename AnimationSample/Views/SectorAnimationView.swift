@@ -21,10 +21,12 @@ class SectorAnimationView: UIView {
                 progress = 1
             }
             
-            sectorLayer.strokeEnd = CGFloat(progress)
+            sectorLayer.strokeEnd = CGFloat(1 - progress)
             
             if progress == 1 {
-                reveal()
+                DispatchQueue.main.after(when: .now() + 0.1, execute: { 
+                    self.reveal()
+                })
             }
             
         }
@@ -50,16 +52,17 @@ class SectorAnimationView: UIView {
     }
     
     private func setupView() {
-        self.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+//        self.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         self.layer.cornerRadius = 12
         self.clipsToBounds = true
         
-        strokeLayer.fillColor = UIColor.clear().cgColor
-        strokeLayer.strokeColor = UIColor.white().cgColor
+        strokeLayer.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
+        strokeLayer.strokeColor = UIColor.clear().cgColor
+        strokeLayer.fillRule = kCAFillRuleEvenOdd
         strokeLayer.lineWidth = 5
         
         sectorLayer.fillColor = UIColor.clear().cgColor
-        sectorLayer.strokeColor = UIColor.white().cgColor
+        sectorLayer.strokeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
         sectorLayer.strokeEnd = 0
         sectorLayer.masksToBounds = true
         
@@ -67,6 +70,37 @@ class SectorAnimationView: UIView {
         strokeLayer.addSublayer(sectorLayer)
         
         progress = 0
+    }
+    
+    private func sectorPath() -> UIBezierPath {
+        let radius: CGFloat = cicleRadius() / 2
+        let arcCenter: CGPoint = CGPoint(x: circleFrame().midX, y:circleFrame().midY)
+        
+        let sectorStartAngle = CGFloat(-M_PI_2)
+        let sectorEndAngle =  CGFloat(2 * M_PI) + sectorStartAngle
+        let sectorPath = UIBezierPath(arcCenter: arcCenter, radius: radius, startAngle: sectorStartAngle, endAngle: sectorEndAngle, clockwise: true)
+    
+        return sectorPath.reversing()
+    }
+    
+    private func strokePath() -> UIBezierPath {
+        let strokePath = UIBezierPath(roundedRect: bounds, cornerRadius: 0)
+        strokePath.append(UIBezierPath(ovalIn: circleFrame()))
+        strokePath.usesEvenOddFillRule = true
+        return strokePath
+    }
+    
+    private func circleFrame() -> CGRect {
+        let width =  2 * (cicleRadius() + 10)
+        let height = 2 * (cicleRadius() + 10)
+        var circleFrame = CGRect(origin: CGPoint.zero, size: CGSize(width: width, height: height))
+        circleFrame.origin.y = (self.frame.height - circleFrame.height) / 2
+        circleFrame.origin.x = (self.frame.width - circleFrame.width) / 2
+        return circleFrame
+    }
+    
+    private func cicleRadius() -> CGFloat {
+        return (min(self.frame.width, self.frame.height) - 30) / 2
     }
     
     private func reveal() {
@@ -85,33 +119,5 @@ class SectorAnimationView: UIView {
         CATransaction.commit()
         
         strokeLayer.add(lineWidthAniamtion, forKey: "strokeWidth")
-    }
-    
-    private func sectorPath() -> UIBezierPath {
-        let radius: CGFloat = cicleRadius() / 2
-        let arcCenter: CGPoint = CGPoint(x: circleFrame().midX, y:circleFrame().midY)
-        
-        let sectorStartAngle = CGFloat(-M_PI_2)
-        let sectorEndAngle =  CGFloat(2 * M_PI) + sectorStartAngle
-        let sectorPath = UIBezierPath()
-        sectorPath.addArc(withCenter: arcCenter, radius: radius, startAngle: sectorStartAngle, endAngle: sectorEndAngle, clockwise: true)
-        
-        return sectorPath
-    }
-    
-    private func strokePath() -> UIBezierPath {
-        let strokePath = UIBezierPath(ovalIn: circleFrame())
-        return strokePath
-    }
-    
-    private func circleFrame() -> CGRect {
-        var circleFrame = CGRect(origin: CGPoint.zero, size: CGSize(width: 2*cicleRadius(), height: 2*cicleRadius()))
-        circleFrame.origin.y = (self.frame.height - circleFrame.height) / 2
-        circleFrame.origin.x = (self.frame.width - circleFrame.width) / 2
-        return circleFrame
-    }
-    
-    private func cicleRadius() -> CGFloat {
-        return (min(self.frame.width, self.frame.height) - 30) / 2
     }
 }
