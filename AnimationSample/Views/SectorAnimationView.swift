@@ -10,7 +10,7 @@ import UIKit
 
 class SectorAnimationView: UIView {
     
-    private var strokeLayer = CAShapeLayer()
+    private var circleLayer = CAShapeLayer()
     private var sectorLayer = CAShapeLayer()
     
     var progress:Double = 0 {
@@ -21,6 +21,7 @@ class SectorAnimationView: UIView {
                 progress = 1
             }
             
+            sectorLayer.path = sectorPath().cgPath
             sectorLayer.strokeEnd = CGFloat(1 - progress)
             
             if progress == 1 {
@@ -51,34 +52,34 @@ class SectorAnimationView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        strokeLayer.path = strokePath(radius:cicleRadius() + 10).cgPath
+        circleLayer.path = circlePath(radius:circleRadius() + 10).cgPath
         sectorLayer.frame = self.bounds
         sectorLayer.path = sectorPath().cgPath
-        sectorLayer.lineWidth = cicleRadius()
+        sectorLayer.lineWidth = circleRadius()
     }
     
     private func setupView() {
         self.layer.cornerRadius = 12
         self.clipsToBounds = true
         
-        strokeLayer.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
-        strokeLayer.strokeColor = UIColor.clear().cgColor
-        strokeLayer.fillRule = kCAFillRuleEvenOdd
-        strokeLayer.lineWidth = 5
+        circleLayer.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
+        circleLayer.strokeColor = UIColor.clear().cgColor
+        circleLayer.fillRule = kCAFillRuleEvenOdd
+        circleLayer.lineWidth = 5
         
-        sectorLayer.fillColor = UIColor.clear().cgColor
+        sectorLayer.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
         sectorLayer.strokeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
         sectorLayer.strokeEnd = 0
         sectorLayer.masksToBounds = true
         
-        self.layer.addSublayer(strokeLayer)
-        strokeLayer.addSublayer(sectorLayer)
+        self.layer.addSublayer(circleLayer)
+        circleLayer.addSublayer(sectorLayer)
         
         progress = 0
     }
     
     private func sectorPath() -> UIBezierPath {
-        let radius: CGFloat = cicleRadius() / 2
+        let radius: CGFloat = circleRadius()
         let arcCenter: CGPoint = CGPoint(x: sectorLayer.bounds.midX, y:sectorLayer.bounds.midY)
         
         let sectorStartAngle = CGFloat(-M_PI_2)
@@ -88,11 +89,11 @@ class SectorAnimationView: UIView {
         return sectorPath.reversing()
     }
     
-    private func strokePath(radius: CGFloat) -> UIBezierPath {
-        let strokePath = UIBezierPath(roundedRect: bounds, cornerRadius: 0)
-        strokePath.append(UIBezierPath(ovalIn: circleFrame(radius: radius)))
-        strokePath.usesEvenOddFillRule = true
-        return strokePath
+    private func circlePath(radius: CGFloat) -> UIBezierPath {
+        let circlePath = UIBezierPath(roundedRect: bounds, cornerRadius: 0)
+        circlePath.append(UIBezierPath(ovalIn: circleFrame(radius: radius)))
+        circlePath.usesEvenOddFillRule = true
+        return circlePath
     }
     
     private func circleFrame(radius: CGFloat) -> CGRect {
@@ -102,7 +103,7 @@ class SectorAnimationView: UIView {
         return circleFrame
     }
     
-    private func cicleRadius() -> CGFloat {
+    private func circleRadius() -> CGFloat {
         if progress == 0 {
             return 0
         }
@@ -110,9 +111,27 @@ class SectorAnimationView: UIView {
     }
     
     func startAnimaition() {
-        UIView.animate(withDuration: 1) { 
-            self.layoutSubviews()
-        }
+        let circleAnimation = CABasicAnimation(keyPath: "path")
+        circleAnimation.fromValue = circleLayer.path
+        circleAnimation.toValue = circlePath(radius: circleRadius() + 10).cgPath
+        circleAnimation.duration = 1
+        circleAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        
+        let sectorAnimation = CABasicAnimation(keyPath: "path")
+        sectorAnimation.fromValue = UIBezierPath(ovalIn: circleFrame(radius: 0)).cgPath
+        sectorAnimation.toValue = UIBezierPath(ovalIn: circleFrame(radius: circleRadius())).cgPath
+        sectorAnimation.duration = 1
+        sectorAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        
+        
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        circleLayer.path = circlePath(radius: circleRadius() + 10).cgPath
+        sectorLayer.path = UIBezierPath(ovalIn: circleFrame(radius: circleRadius())).cgPath
+        CATransaction.commit()
+        
+        circleLayer.add(circleAnimation, forKey: "circleStartAnimation")
+        sectorLayer.add(sectorAnimation, forKey: "sectorStartAnimation")
     }
     
     private func reveal() {
@@ -120,16 +139,16 @@ class SectorAnimationView: UIView {
         let finalRadius = 2 * sqrt((center.x*center.x) + (center.y*center.y))
         
         let lineWidthAniamtion = CABasicAnimation(keyPath: "path")
-        lineWidthAniamtion.fromValue = strokeLayer.path
-        lineWidthAniamtion.toValue = strokePath(radius: finalRadius).cgPath
+        lineWidthAniamtion.fromValue = circleLayer.path
+        lineWidthAniamtion.toValue = circlePath(radius: finalRadius).cgPath
         lineWidthAniamtion.duration = 1
         lineWidthAniamtion.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-        strokeLayer.path = strokePath(radius: finalRadius).cgPath
+        circleLayer.path = circlePath(radius: finalRadius).cgPath
         CATransaction.commit()
         
-        strokeLayer.add(lineWidthAniamtion, forKey: "strokeWidth")
+        circleLayer.add(lineWidthAniamtion, forKey: "strokeWidth")
     }
 }
